@@ -16,4 +16,12 @@ def build (bld):
     bld(target='server',
         features=['cxx', 'cxxprogram'],
         source='server.cpp',
-        use='NDN_CXX')
+        use='NDN_CXX',
+	cxxflags=['-std=c++14'])
+
+
+    bld(target='client',
+        features=['cxx', 'cxxprogram'],
+        source='client.cpp',
+        use='NDN_CXX',
+	cxxflags=['-std=c++14'])

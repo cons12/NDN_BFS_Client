@@ -14,7 +14,7 @@ public:
   Server(ndn::Face& face)
     : m_face(face)
   {
-    m_face.setInterestFilter("/demo/news",
+    m_face.setInterestFilter("/astri/message",
                              std::bind(&Server::onInterest, this, _2),
                              std::bind([] {
                                  // std::cerr << "Prefix registered" << std::endl;
@@ -29,10 +29,14 @@ private:
   onInterest(const ndn::Interest& interest)
   {
     std::cerr << "<< interest for " << interest << std::endl;
-    if (interest.getName().size() != 2) {
+    /*
+    if (interest.getName().size() = ) {
       // should return or print some error
       return;
     }
+    */
+    std::cerr << "[DEBUG]" << interest.getName() << std::endl;
+    std::cerr << "[DEBUG]RIGHT BEFORE PAGE" << std::endl;
 
     std::string page =
       "<!DOCTYPE HTML>\n"
@@ -53,7 +57,7 @@ private:
       "  </body>\n"
       "</html>";
 
-    ndn::Name dataName("/demo/news");
+    ndn::Name dataName("/astri/message");
     dataName.append(ndn::time::toString(ndn::time::system_clock::now(), "%Y-%m-%d"));
     dataName.appendVersion();
     dataName.appendSegment(0);
@@ -65,6 +69,7 @@ private:
     // sign data packet
     m_keyChain.sign(*data);
 
+    //std::cerr << "[DEBUG DATA PUT]" << std::endl;
     // make data packet available for fetching
     m_face.put(*data);
   }
@@ -86,6 +91,8 @@ main(int argc, char** argv)
 
     // start processing loop (it will block forever)
     face.processEvents();
+
+    std::cerr << "After processEvent" << std::endl;
   }
   catch (const std::exception& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
